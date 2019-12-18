@@ -57,7 +57,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getAlarms();
-    setInterval(this.getAlarms, 3000);
+    setInterval(this.getAlarms, 30000);
   }
 
   getAlarms = () => {
