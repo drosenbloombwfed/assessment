@@ -1,0 +1,51 @@
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+var cors = require('cors')
+
+const app = express();
+
+app.use(cors());
+
+function getState(thingName) {
+  let state = Math.floor(Math.random() * 3) + 1;
+  let thingState = '';
+  switch(state) {
+    case 1:
+      thingState = 'SECURE';
+      break;
+    case 2:
+      thingState = 'UALARM';
+      break;
+    case 3:
+      thingState = 'AALARM';
+      break;
+  }
+  let priority = 0;
+  if(thingState.includes("ALARM")) {
+    priority = Math.floor(Math.random() * 10) + 1;
+  }
+  return { 'thingName' : thingName, 'state' : thingState, 'priority' : priority };
+
+}
+
+app.get ('/things', function(req, res) {
+  let retVal = [];
+  for (let x=1;x<=5;x++) {
+    let thingName = `thing${x}`;
+    retVal.push(getState(thingName));
+  }
+  res.json(retVal);
+});
+
+
+let port = process.env.PORT || 3000;
+let server = app.listen(port);
+console.log(`Listening on port ${port}`);
+
+process.on('SIGINT', function() {
+  console.log('Shutting down!');
+  server.close(function() {
+    process.exit(0);
+  });
+});
